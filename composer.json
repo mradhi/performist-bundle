@@ -1,0 +1,34 @@
+{
+    "name": "guennichi/performist-bundle",
+    "description": "A bundle for the performist package",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Radhi Guennichi",
+            "email": "radhi@guennichi.com",
+            "homepage": "https://www.guennichi.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "symfony/dependency-injection": "^4.4|^5.0",
+        "symfony/config": "^4.4|^5.0",
+        "symfony/http-kernel": "^4.4|^5.0",
+        "guennichi/performist": "^1.2",
+        "psr/log": "^1.1"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^4.4|^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Guennichi\\PerformistBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Guennichi\\PerformistBundle\\Tests\\": "tests/"
+        }
+    }
+}

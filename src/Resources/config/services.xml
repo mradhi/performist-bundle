@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ This file is part of the PerformistBundle package.
+  ~
+  ~ (c) Radhi GUENNICHI <radhi@guennichi.com> (https://www.guennichi.com)
+  ~
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+  -->
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <!-- Internal core services -->
+        <service id="guennichi.performist.registry" class="Guennichi\Performist\Registry" public="false"/>
+        <service id="guennichi.performist.handler_peeler" class="Guennichi\Performist\HandlerPeeler" public="false"/>
+        <service id="guennichi.performist.performer" class="Guennichi\Performist\Performer" public="false">
+            <argument type="service" id="guennichi.performist.registry"/>
+            <argument type="service" id="guennichi.performist.handler_peeler"/>
+        </service>
+        <service id="guennichi_performist.performer" class="Guennichi\PerformistBundle\Performer\Performer" public="true">
+            <argument type="service" id="guennichi.performist.performer"/>
+            <argument type="service" id="guennichi.performist.registry"/>
+            <argument type="tagged_locator" tag="guennichi_performist.middleware" index-by="key"/>
+            <argument /> <!-- argument added dynamically -->
+        </service>
+
+        <!-- Internal middlewares -->
+        <service class="Guennichi\PerformistBundle\Middleware\LoggerMiddleware" id="performist.logger" public="false">
+            <tag name="guennichi_performist.middleware"/>
+            <argument type="service" id="logger" on-invalid="null"/>
+        </service>
+
+        <!-- Add service alias for autowiring -->
+        <service alias="guennichi_performist.performer" id="Guennichi\PerformistBundle\Performer\PerformerInterface" public="false"/>
+    </services>
+</container>
