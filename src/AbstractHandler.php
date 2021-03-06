@@ -26,24 +26,24 @@ abstract class AbstractHandler implements HandlerInterface
     /**
      * @var Event[]
      */
-    private array $postDispatchEvents = [];
+    private array $deferredEvents = [];
 
     /**
      * Dispatch an event after the action is successfully handled.
-     * Sequence: preMiddlewares -> Handle -> postMiddlewares -> postDispatchEventsSubscribers
+     * Sequence: preMiddlewares -> Handle -> postMiddlewares -> deferredEventsSubscribers
      *
      * @param Event $event
      */
-    protected function dispatchAfterHandled(Event $event): void
+    protected function defer(Event $event): void
     {
-        $this->postDispatchEvents[] = $event;
+        $this->deferredEvents[] = $event;
     }
 
     /**
      * @return Event[]
      */
-    public function getPostDispatchEvents(): array
+    public function getDeferredEvents(): array
     {
-        return $this->postDispatchEvents;
+        return $this->deferredEvents;
     }
 }

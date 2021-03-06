@@ -74,7 +74,7 @@ class Performer implements PerformerInterface
         $result = $this->basePerformer->perform($action, $middlewares);
 
         if ($handler instanceof AbstractHandler) {
-            foreach ($handler->getPostDispatchEvents() as $event) {
+            foreach ($handler->getDeferredEvents() as $event) {
                 $this->eventDispatcher->dispatch($event);
             }
         }

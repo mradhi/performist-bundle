@@ -19,7 +19,7 @@ class ActionHandler extends AbstractHandler
     {
         $action->runs[] = 'core';
 
-        $this->dispatchAfterHandled(new CustomEvent($action));
+        $this->defer(new CustomEvent($action));
 
         return $action;
     }
