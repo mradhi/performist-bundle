@@ -24,12 +24,14 @@ abstract class AbstractHandler implements HandlerInterface
     public static array $middlewares = [];
 
     /**
+     * Deferred events to be executed after performing/handling the action.
+     *
      * @var Event[]
      */
     private array $deferredEvents = [];
 
     /**
-     * Dispatch an event after the action is successfully handled.
+     * Dispatch an event after the action is successfully performed/handled.
      * Sequence: preMiddlewares -> Handle -> postMiddlewares -> deferredEventsSubscribers
      *
      * @param Event $event
@@ -40,6 +42,10 @@ abstract class AbstractHandler implements HandlerInterface
     }
 
     /**
+     * Get deferred events.
+     *
+     * @internal
+     *
      * @return Event[]
      */
     public function getDeferredEvents(): array
