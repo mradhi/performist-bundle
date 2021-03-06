@@ -52,4 +52,15 @@ abstract class AbstractHandler implements HandlerInterface
     {
         return $this->deferredEvents;
     }
+
+    /**
+     * Clone the handler
+     */
+    public function __clone()
+    {
+        // Cleanup the deferred events list
+        // Useful for same actions with same handler reference
+        // inside a nested perform() calls.
+        $this->deferredEvents = [];
+    }
 }

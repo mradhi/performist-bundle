@@ -66,6 +66,17 @@ class Performer implements PerformerInterface
     {
         $handler = $this->registry->get(get_class($action));
 
+        /**
+         * To avoid deferred events conflicts when we execute
+         * the same handler reference inside a nested perform() calls.
+         *
+         * @see AbstractHandler::__clone()
+         */
+        if ($handler instanceof AbstractHandler) {
+            $handler = clone $handler;
+        }
+
+
         // Merge with the default middlewares
         // Priority to the default ones.
         $middlewares = array_merge($this->defaultMiddlewares, $middlewares);
@@ -77,7 +88,7 @@ class Performer implements PerformerInterface
             return $this->middlewareServiceLocator->get($middlewareId);
         }, $middlewares);
 
-        $result = $this->basePerformer->perform($action, $middlewares);
+        $result = $this->basePerformer->perform($action, $handler, $middlewares);
 
         if ($handler instanceof AbstractHandler) {
             foreach ($handler->getDeferredEvents() as $event) {
