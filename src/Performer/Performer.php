@@ -76,7 +76,6 @@ class Performer implements PerformerInterface
             $handler = clone $handler;
         }
 
-
         // Merge with the default middlewares
         // Priority to the default ones.
         $middlewares = array_merge($this->defaultMiddlewares, $middlewares);
