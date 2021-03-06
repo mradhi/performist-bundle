@@ -15,6 +15,7 @@ use Guennichi\Performist\Performer as BasePerformer;
 use Guennichi\Performist\Registry;
 use Guennichi\PerformistBundle\AbstractHandler;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
@@ -30,12 +31,15 @@ class Performer implements PerformerInterface
 
     protected EventDispatcherInterface $eventDispatcher;
 
+    protected LoggerInterface $logger;
+
     protected array $defaultMiddlewares;
 
     /**
      * @param BasePerformer $basePerformer
      * @param Registry $registry
      * @param EventDispatcherInterface $eventDispatcher
+     * @param LoggerInterface $logger
      * @param ServiceLocator $middlewareServiceLocator
      * @param string[] $defaultMiddlewares
      */
@@ -43,12 +47,14 @@ class Performer implements PerformerInterface
         BasePerformer $basePerformer,
         Registry $registry,
         EventDispatcherInterface $eventDispatcher,
+        LoggerInterface $logger,
         ServiceLocator $middlewareServiceLocator,
         array $defaultMiddlewares = [])
     {
         $this->basePerformer = $basePerformer;
         $this->registry = $registry;
         $this->eventDispatcher = $eventDispatcher;
+        $this->logger = $logger;
         $this->middlewareServiceLocator = $middlewareServiceLocator;
         $this->defaultMiddlewares = $defaultMiddlewares;
     }
@@ -76,6 +82,11 @@ class Performer implements PerformerInterface
         if ($handler instanceof AbstractHandler) {
             foreach ($handler->getDeferredEvents() as $event) {
                 $this->eventDispatcher->dispatch($event);
+                $this->logger->info('Event: "{event}"', [
+                    'action' => get_class($action),
+                    'handler' => get_class($handler),
+                    'event' => get_class($event)
+                ]);
             }
         }
 

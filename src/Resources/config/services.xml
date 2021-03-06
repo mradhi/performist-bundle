@@ -25,14 +25,17 @@
             <argument type="service" id="guennichi.performist.performer"/>
             <argument type="service" id="guennichi.performist.registry"/>
             <argument type="service" id="event_dispatcher" on-invalid="exception"/>
+            <argument type="service" id="logger" on-invalid="null"/>
             <argument type="tagged_locator" tag="guennichi_performist.middleware" index-by="key"/>
             <argument/> <!-- argument added dynamically -->
+            <tag name="monolog.logger" channel="action"/>
         </service>
 
         <!-- Internal middlewares -->
         <service class="Guennichi\PerformistBundle\Middleware\LoggerMiddleware" id="performist.logger" public="false">
-            <tag name="guennichi_performist.middleware"/>
             <argument type="service" id="logger" on-invalid="null"/>
+            <tag name="guennichi_performist.middleware"/>
+            <tag name="monolog.logger" channel="action"/>
         </service>
 
         <!-- Add service alias for autowiring -->

@@ -35,7 +35,7 @@ class GuennichiPerformistExtension extends Extension
 
         $defaultMiddlewares = $config['middlewares'];
         $container->getDefinition('guennichi_performist.performer')
-            ->replaceArgument(4, $defaultMiddlewares);
+            ->replaceArgument(5, $defaultMiddlewares);
 
         $container->registerForAutoconfiguration(HandlerInterface::class)
             ->addTag('guennichi_performist.handler');
