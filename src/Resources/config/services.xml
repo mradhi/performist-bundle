@@ -20,11 +20,13 @@
             <argument type="service" id="guennichi.performist.registry"/>
             <argument type="service" id="guennichi.performist.handler_peeler"/>
         </service>
-        <service id="guennichi_performist.performer" class="Guennichi\PerformistBundle\Performer\Performer" public="true">
+        <service id="guennichi_performist.performer" class="Guennichi\PerformistBundle\Performer\Performer"
+                 public="true">
             <argument type="service" id="guennichi.performist.performer"/>
             <argument type="service" id="guennichi.performist.registry"/>
+            <argument type="service" id="event_dispatcher" on-invalid="exception"/>
             <argument type="tagged_locator" tag="guennichi_performist.middleware" index-by="key"/>
-            <argument /> <!-- argument added dynamically -->
+            <argument/> <!-- argument added dynamically -->
         </service>
 
         <!-- Internal middlewares -->
@@ -34,6 +36,7 @@
         </service>
 
         <!-- Add service alias for autowiring -->
-        <service alias="guennichi_performist.performer" id="Guennichi\PerformistBundle\Performer\PerformerInterface" public="false"/>
+        <service alias="guennichi_performist.performer" id="Guennichi\PerformistBundle\Performer\PerformerInterface"
+                 public="false"/>
     </services>
 </container>

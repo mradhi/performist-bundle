@@ -14,6 +14,7 @@ namespace Guennichi\PerformistBundle\Performer;
 use Guennichi\Performist\Performer as BasePerformer;
 use Guennichi\Performist\Registry;
 use Guennichi\PerformistBundle\AbstractHandler;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
@@ -27,18 +28,27 @@ class Performer implements PerformerInterface
 
     protected ServiceLocator $middlewareServiceLocator;
 
+    protected EventDispatcherInterface $eventDispatcher;
+
     protected array $defaultMiddlewares;
 
     /**
      * @param BasePerformer $basePerformer
      * @param Registry $registry
+     * @param EventDispatcherInterface $eventDispatcher
      * @param ServiceLocator $middlewareServiceLocator
      * @param string[] $defaultMiddlewares
      */
-    public function __construct(BasePerformer $basePerformer, Registry $registry, ServiceLocator $middlewareServiceLocator, array $defaultMiddlewares = [])
+    public function __construct(
+        BasePerformer $basePerformer,
+        Registry $registry,
+        EventDispatcherInterface $eventDispatcher,
+        ServiceLocator $middlewareServiceLocator,
+        array $defaultMiddlewares = [])
     {
         $this->basePerformer = $basePerformer;
         $this->registry = $registry;
+        $this->eventDispatcher = $eventDispatcher;
         $this->middlewareServiceLocator = $middlewareServiceLocator;
         $this->defaultMiddlewares = $defaultMiddlewares;
     }
@@ -53,16 +63,23 @@ class Performer implements PerformerInterface
         // Merge with the default middlewares
         // Priority to the default ones.
         $middlewares = array_merge($this->defaultMiddlewares, $middlewares);
-
         if ($handler instanceof AbstractHandler && !empty($handler::$middlewares)) {
             $middlewares = array_merge($middlewares, $handler::$middlewares);
         }
-
         // Fetch middleware services instances from classnames
         $middlewares = array_map(function (string $middlewareId) {
             return $this->middlewareServiceLocator->get($middlewareId);
         }, $middlewares);
 
-        return $this->basePerformer->perform($action, $middlewares);
+        $result = $this->basePerformer->perform($action, $middlewares);
+
+        if ($handler instanceof AbstractHandler) {
+            foreach ($handler->getPostDispatchEvents() as $event) {
+                $this->eventDispatcher->dispatch($event);
+            }
+        }
+
+
+        return $result;
     }
 }

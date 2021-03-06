@@ -24,11 +24,11 @@ class Middleware implements MiddlewareInterface
      */
     public function handle($action, Closure $next)
     {
-        $action->runs[] = 'before';
+        $action->runs[] = 'middleware_before';
 
         $result = $next($action);
 
-        $action->runs[] = 'after';
+        $action->runs[] = 'middleware_after';
 
         return $result;
     }

@@ -12,6 +12,7 @@ namespace Guennichi\PerformistBundle;
 
 
 use Guennichi\Performist\HandlerInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class AbstractHandler implements HandlerInterface
 {
@@ -21,4 +22,28 @@ abstract class AbstractHandler implements HandlerInterface
      * @var string[]
      */
     public static array $middlewares = [];
+
+    /**
+     * @var Event[]
+     */
+    private array $postDispatchEvents = [];
+
+    /**
+     * Dispatch an event after the action is successfully handled.
+     * Sequence: preMiddlewares -> Handle -> postMiddlewares -> postDispatchEventsSubscribers
+     *
+     * @param Event $event
+     */
+    protected function dispatchAfterHandled(Event $event): void
+    {
+        $this->postDispatchEvents[] = $event;
+    }
+
+    /**
+     * @return Event[]
+     */
+    public function getPostDispatchEvents(): array
+    {
+        return $this->postDispatchEvents;
+    }
 }

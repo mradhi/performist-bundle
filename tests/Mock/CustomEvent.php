@@ -11,16 +11,19 @@
 namespace Guennichi\PerformistBundle\Tests\Mock;
 
 
-use Guennichi\PerformistBundle\AbstractHandler;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class ActionHandler extends AbstractHandler
+class CustomEvent extends Event
 {
-    public function __invoke(Action $action): Action
+    protected Action $action;
+
+    public function __construct(Action $action)
     {
-        $action->runs[] = 'core';
+        $this->action = $action;
+    }
 
-        $this->dispatchAfterHandled(new CustomEvent($action));
-
-        return $action;
+    public function getAction(): Action
+    {
+        return $this->action;
     }
 }

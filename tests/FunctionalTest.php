@@ -27,6 +27,6 @@ class FunctionalTest extends TestCase
         $performer = $container->get('guennichi_performist.performer');
 
         $result = $performer->perform(new Action());
-        $this->assertSame(['before', 'core', 'after'], $result->runs);
+        $this->assertSame(['middleware_before', 'core', 'middleware_after', 'custom_event'], $result->runs);
     }
 }

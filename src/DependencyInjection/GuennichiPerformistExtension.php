@@ -18,7 +18,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 
 class GuennichiPerformistExtension extends Extension
 {
@@ -36,7 +35,7 @@ class GuennichiPerformistExtension extends Extension
 
         $defaultMiddlewares = $config['middlewares'];
         $container->getDefinition('guennichi_performist.performer')
-            ->replaceArgument(3, $defaultMiddlewares);
+            ->replaceArgument(4, $defaultMiddlewares);
 
         $container->registerForAutoconfiguration(HandlerInterface::class)
             ->addTag('guennichi_performist.handler');
