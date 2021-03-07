@@ -12,16 +12,18 @@ namespace Guennichi\PerformistBundle\Performer;
 
 
 use Guennichi\Performist\Exception\PerformistException;
+use Guennichi\PerformistBundle\Context\Context;
 
 interface PerformerInterface
 {
     /**
      * @param mixed $action
      * @param string[] $middlewares additional middlewares class names.
+     * @param Context|null $context
      *
      * @return mixed
      *
      * @throws PerformistException
      */
-    public function perform($action, array $middlewares = []);
+    public function perform($action, array $middlewares = [], Context $context = null);
 }

@@ -14,6 +14,7 @@ namespace Guennichi\PerformistBundle\Performer;
 use Guennichi\Performist\Performer as BasePerformer;
 use Guennichi\Performist\Registry;
 use Guennichi\PerformistBundle\AbstractHandler;
+use Guennichi\PerformistBundle\Context\Context;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -62,19 +63,13 @@ class Performer implements PerformerInterface
     /**
      * @inheritDoc
      */
-    public function perform($action, array $middlewares = [])
+    public function perform($action, array $middlewares = [], Context $context = null)
     {
-        $handler = $this->registry->get(get_class($action));
-
-        /**
-         * To avoid deferred events conflicts when we execute
-         * the same handler reference inside a nested perform() calls.
-         *
-         * @see AbstractHandler::__clone()
-         */
-        if ($handler instanceof AbstractHandler) {
-            $handler = clone $handler;
+        if (null === $context) {
+            $context = new Context($action);
         }
+
+        $handler = $this->registry->get(get_class($action));
 
         // Merge with the default middlewares
         // Priority to the default ones.
@@ -87,10 +82,11 @@ class Performer implements PerformerInterface
             return $this->middlewareServiceLocator->get($middlewareId);
         }, $middlewares);
 
-        $result = $this->basePerformer->perform($action, $handler, $middlewares);
+        $result = $this->basePerformer->perform($action, $middlewares, $context);
 
-        if ($handler instanceof AbstractHandler) {
-            foreach ($handler->getDeferredEvents() as $event) {
+        if ($context->isWrappedBy($action)) {
+            // Dispatch deferred events
+            foreach ($context->getDeferredEvents() as $event) {
                 $this->eventDispatcher->dispatch($event);
                 $this->logger->info('Event: "{event}"', [
                     'action' => get_class($action),
@@ -99,7 +95,6 @@ class Performer implements PerformerInterface
                 ]);
             }
         }
-
 
         return $result;
     }

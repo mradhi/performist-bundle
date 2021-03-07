@@ -12,14 +12,15 @@ namespace Guennichi\PerformistBundle\Tests\Mock;
 
 
 use Guennichi\PerformistBundle\AbstractHandler;
+use Guennichi\PerformistBundle\Context\Context;
 
 class ActionHandler extends AbstractHandler
 {
-    public function __invoke(Action $action): Action
+    public function __invoke(Action $action, Context $context): Action
     {
         $action->runs[] = 'core';
 
-        $this->defer(new CustomEvent($action));
+        $context->deferEvent(new CustomEvent($action));
 
         return $action;
     }

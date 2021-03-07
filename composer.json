@@ -14,7 +14,7 @@
         "php": ">=7.4",
         "symfony/framework-bundle": "^4.4|^5.0",
         "symfony/dependency-injection": "^4.4|^5.0",
-        "guennichi/performist": "^2.0",
+        "guennichi/performist": "^2.1",
         "psr/log": "^1.1"
     },
     "require-dev": {
