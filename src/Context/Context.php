@@ -18,7 +18,7 @@ class Context
     /**
      * @var mixed
      */
-    public $rootAction;
+    private $rootAction;
 
     /**
      * Deferred events to be executed after performing/handling the action.
