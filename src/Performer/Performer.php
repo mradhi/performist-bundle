@@ -89,8 +89,7 @@ class Performer implements PerformerInterface
             foreach ($context->getDeferredEvents() as $event) {
                 $this->eventDispatcher->dispatch($event);
                 $this->logger->info('Event: "{event}"', [
-                    'action' => get_class($action),
-                    'handler' => get_class($handler),
+                    'context' => $context,
                     'event' => get_class($event)
                 ]);
             }
