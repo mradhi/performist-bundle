@@ -27,6 +27,13 @@ class Context
      */
     private array $deferredEvents = [];
 
+    /**
+     * Custom attributes
+     *
+     * @var array
+     */
+    private array $attributes = [];
+
     public function __construct($rootAction)
     {
         $this->rootAction = $rootAction;
@@ -63,5 +70,45 @@ class Context
     public function getDeferredEvents(): array
     {
         return $this->deferredEvents;
+    }
+
+    /**
+     * Set custom attribute value.
+     *
+     * @param string $name
+     * @param $value
+     */
+    public function setAttribute(string $name, $value): void
+    {
+        $this->attributes[$name] = $value;
+    }
+
+    /**
+     * Get custom attribute value.
+     *
+     * @param string $name
+     * @param null $default
+     *
+     * @return mixed|null
+     */
+    public function getAttribute(string $name, $default = null)
+    {
+        if ($this->hasAttribute($name)) {
+            return $this->attributes[$name];
+        }
+
+        return $default;
+    }
+
+    /**
+     * Check if a given attribute exists.
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasAttribute(string $name): bool
+    {
+        return array_key_exists($name, $this->attributes);
     }
 }
